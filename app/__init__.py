@@ -39,7 +39,7 @@ def create_app(config_class=Config):
         "swagger_ui": True,
         "specs_route": "/api/docs",
     }
-    
+
     swagger_template = {
         "swagger": "2.0",
         "info": {
@@ -67,16 +67,16 @@ def create_app(config_class=Config):
         },
         "security": [{"Bearer": []}, {"ApiKey": []}],
     }
-    
+
     Swagger(app, config=swagger_config, template=swagger_template)
 
     # Setup middleware
     from app.middleware.logging import setup_request_logging, setup_error_handlers
     from app.utils.cache import Cache
-    
+
     setup_request_logging(app)
     setup_error_handlers(app)
-    
+
     # Initialize cache
     app.cache = Cache(app.config.get("REDIS_URL", "redis://localhost:6379/0"))
 

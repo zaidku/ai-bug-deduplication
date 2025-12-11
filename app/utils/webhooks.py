@@ -125,9 +125,7 @@ class WebhookNotifier:
             import json
 
             message = json.dumps(payload, sort_keys=True).encode()
-            signature = hmac.new(
-                secret.encode(), message, hashlib.sha256
-            ).hexdigest()
+            signature = hmac.new(secret.encode(), message, hashlib.sha256).hexdigest()
             headers["X-Webhook-Signature"] = f"sha256={signature}"
 
         response = requests.post(

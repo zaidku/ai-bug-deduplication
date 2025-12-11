@@ -22,7 +22,11 @@ from app.models.duplicate import DuplicateHistory
 from app.services.duplicate_detector import DuplicateDetector
 from app.services.quality_checker import QualityChecker
 from app.services.similarity_engine import SimilarityEngine
-from app.utils.exceptions import DuplicateResourceError, ResourceNotFoundError, ValidationError
+from app.utils.exceptions import (
+    DuplicateResourceError,
+    ResourceNotFoundError,
+    ValidationError,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -60,10 +64,10 @@ def get_duplicate_detector():
 def create_bug():
     """
     Submit a new bug report with duplicate detection and quality validation.
-    
+
     This endpoint validates the bug submission, detects potential duplicates using AI,
     and tracks the submission context (user, environment, bot detection).
-    
+
     ---
     tags:
       - Bugs
@@ -167,7 +171,7 @@ def create_bug():
     # Extract environment and bot context
     env_context = extract_environment_context()
     is_bot = detect_bot_request()
-    
+
     # Get authenticated user info from g (set by @require_auth decorator)
     user_id = getattr(g, "user_id", None)
     api_key_id = getattr(g, "api_key_id", None)
@@ -276,7 +280,7 @@ def create_bug():
 def get_bug(bug_id):
     """
     Get bug details by ID.
-    
+
     ---
     tags:
       - Bugs
@@ -301,7 +305,9 @@ def get_bug(bug_id):
     if not bug:
         raise ResourceNotFoundError(f"Bug with ID {bug_id} not found")
 
-    include_duplicates = request.args.get("include_duplicates", "false").lower() == "true"
+    include_duplicates = (
+        request.args.get("include_duplicates", "false").lower() == "true"
+    )
 
     response = {
         "id": str(bug.id),
@@ -339,7 +345,7 @@ def get_bug(bug_id):
 def get_bug_duplicates(bug_id):
     """
     Get all duplicates of a specific bug.
-    
+
     ---
     tags:
       - Bugs
@@ -365,29 +371,31 @@ def get_bug_duplicates(bug_id):
     # Also get duplicate history
     history = DuplicateHistory.query.filter_by(duplicate_bug_id=bug.id).all()
 
-    return jsonify({
-        "bug_id": str(bug.id),
-        "title": bug.title,
-        "duplicate_count": len(duplicates),
-        "duplicates": [
-            {
-                "id": str(d.id),
-                "title": d.title,
-                "similarity_score": d.similarity_score,
-                "status": d.status,
-                "created_at": d.created_at.isoformat(),
-            }
-            for d in duplicates
-        ],
-        "history": [
-            {
-                "detected_at": h.detected_at.isoformat(),
-                "similarity_score": h.similarity_score,
-                "action_taken": h.action_taken,
-            }
-            for h in history
-        ],
-    })
+    return jsonify(
+        {
+            "bug_id": str(bug.id),
+            "title": bug.title,
+            "duplicate_count": len(duplicates),
+            "duplicates": [
+                {
+                    "id": str(d.id),
+                    "title": d.title,
+                    "similarity_score": d.similarity_score,
+                    "status": d.status,
+                    "created_at": d.created_at.isoformat(),
+                }
+                for d in duplicates
+            ],
+            "history": [
+                {
+                    "detected_at": h.detected_at.isoformat(),
+                    "similarity_score": h.similarity_score,
+                    "action_taken": h.action_taken,
+                }
+                for h in history
+            ],
+        }
+    )
 
 
 @bugs_bp.route("/search", methods=["GET"])
@@ -396,7 +404,7 @@ def get_bug_duplicates(bug_id):
 def search_bugs():
     """
     Search bugs by various criteria.
-    
+
     ---
     tags:
       - Bugs
@@ -455,20 +463,22 @@ def search_bugs():
     total = query.count()
     bugs = query.offset(offset).limit(limit).all()
 
-    return jsonify({
-        "total": total,
-        "limit": limit,
-        "offset": offset,
-        "results": [
-            {
-                "id": str(bug.id),
-                "title": bug.title,
-                "product": bug.product,
-                "status": bug.status,
-                "severity": bug.severity,
-                "is_duplicate": bug.is_duplicate,
-                "created_at": bug.created_at.isoformat(),
-            }
-            for bug in bugs
-        ],
-    })
+    return jsonify(
+        {
+            "total": total,
+            "limit": limit,
+            "offset": offset,
+            "results": [
+                {
+                    "id": str(bug.id),
+                    "title": bug.title,
+                    "product": bug.product,
+                    "status": bug.status,
+                    "severity": bug.severity,
+                    "is_duplicate": bug.is_duplicate,
+                    "created_at": bug.created_at.isoformat(),
+                }
+                for bug in bugs
+            ],
+        }
+    )
