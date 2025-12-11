@@ -1,11 +1,14 @@
 """
 Sample API usage examples
 """
-import requests
+
 import json
+
+import requests
 
 # Base URL
 BASE_URL = "http://localhost:5000/api"
+
 
 def submit_bug():
     """Submit a new bug"""
@@ -20,9 +23,9 @@ def submit_bug():
         "device": "Samsung Galaxy S23",
         "os_version": "Android 14",
         "build_version": "2.1.0",
-        "region": "US"
+        "region": "US",
     }
-    
+
     response = requests.post(f"{BASE_URL}/bugs/", json=bug_data)
     print(f"Status: {response.status_code}")
     print(json.dumps(response.json(), indent=2))
@@ -61,7 +64,7 @@ def approve_low_quality(item_id):
     """Approve a low quality submission"""
     data = {
         "reviewed_by": "qa@example.com",
-        "notes": "Reviewed and approved after clarification"
+        "notes": "Reviewed and approved after clarification",
     }
     response = requests.post(f"{BASE_URL}/qa/low-quality/{item_id}/approve", json=data)
     print(json.dumps(response.json(), indent=2))
@@ -72,7 +75,7 @@ def promote_duplicate(bug_id):
     """Promote a duplicate to independent bug"""
     data = {
         "user": "qa@example.com",
-        "reason": "After investigation, this is a different issue with similar symptoms"
+        "reason": "After investigation, this is a different issue with similar symptoms",
     }
     response = requests.post(f"{BASE_URL}/qa/bugs/{bug_id}/promote", json=data)
     print(json.dumps(response.json(), indent=2))
@@ -96,9 +99,9 @@ def get_duplicate_stats():
 if __name__ == "__main__":
     print("=== Submitting a bug ===")
     result = submit_bug()
-    
+
     print("\n=== Getting system stats ===")
     get_system_stats()
-    
+
     print("\n=== Listing bugs ===")
     list_bugs()
