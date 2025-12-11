@@ -421,4 +421,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ---
 
-**Maintainer**: [Zaid Kurdi](https://github.com/zaidku)
+**Maintainer**: [Zaid Kuba](https://github.com/zaidku)
