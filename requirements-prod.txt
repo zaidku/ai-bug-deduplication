@@ -1,0 +1,4 @@
+flasgger==0.9.7.1
+PyJWT==2.8.0
+python-dotenv==1.0.0
+sentry-sdk[flask]==1.39.1
